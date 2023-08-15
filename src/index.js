@@ -33,7 +33,7 @@ client.on("interactionCreate", async (interaction) => {
 
     if (interaction.commandName === "next") {
         let boss = await getNextBoss()
-        await interaction.reply("The next boss is ${boss.name} in ${boss.time} minutes!")
+        await interaction.reply("The next boss is " + boss.name + " in " + boss.time + " minutes!")
     }
 })
 
