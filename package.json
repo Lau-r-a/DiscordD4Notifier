@@ -2,10 +2,16 @@
   "name": "discordd4notifier",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node -r dotenv/config src/index.js"
   },
   "author": "",
-  "license": "tbd"
+  "license": "tbd",
+  "dependencies": {
+    "discord.js": "^14.12.1",
+    "dotenv": "^16.3.1"
+  },
+  "type": "module" 
 }
