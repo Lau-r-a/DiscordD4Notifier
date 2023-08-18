@@ -25,13 +25,12 @@ export function DiscordUtil(token) {
         }
     }
 
-    this.initListeners = (listenerMap) => {
+    this.initListeners = async (listenerMap) => {
         this.client.on("interactionCreate", async (interaction) => {
-            listenerMap.array.forEach((element) => {
+            listenerMap.array.forEach(async (element) => {
                 if (element.name == interaction.commandName) {
-                    element.callback(interaction)
+                    await element.callback(interaction)
                 }
-                return
             })
         })
     }
