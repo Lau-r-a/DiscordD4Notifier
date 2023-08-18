@@ -46,13 +46,14 @@ export function D4BossApi() {
 
     this.getMessageCountdown = async () => {
         let boss = await getNextBoss()
+        let message = null
 
         if (this.lastBossMinutes < boss.time) {
-            return messageWithTime(boss.name, boss.time)
+            message = messageWithTime(boss.name, boss.time)
         }
 
         if (boss.time < 20) {
-            return messageCountdown(boss.name, boss.time)
+            message = messageCountdown(boss.name, boss.time)
         }
 
         this.lastBossMinutes = boss.time
