@@ -1,4 +1,5 @@
 import * as https from "https"
+import moment from "moment-timezone"
 
 async function httpsGet(url) {
     return new Promise(async (resolve, reject) => {
@@ -25,7 +26,7 @@ async function getNextBoss() {
 }
 
 function convertCountdownToTime(minutes) {
-    return new Date(Date.now() + minutes * 60000).toLocaleTimeString()
+    return moment().tz("Germany/Berlin").add(minutes, "minutes").format()
 }
 
 function messageCountdown(name, time) {
