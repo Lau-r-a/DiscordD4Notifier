@@ -26,7 +26,7 @@ async function getNextBoss() {
 }
 
 function convertCountdownToTime(minutes) {
-    return moment().tz("Europe/Berlin").add(minutes, "minutes").format()
+    return moment().tz("Europe/Berlin").add(minutes, "minutes").format("h:mm:ss a")
 }
 
 function messageCountdown(name, time) {

@@ -11,13 +11,13 @@ const users = process.env.USERS.split(",")
 discordUtil.initListeners([
     {
         name: "ping",
-        callback: async () => {
+        callback: async (interaction) => {
             await interaction.reply("Pong!")
         },
     },
     {
         name: "next",
-        callback: async () => {
+        callback: async (interaction) => {
             let message = await d4BossApi.getMessage()
             await interaction.reply(message)
         },

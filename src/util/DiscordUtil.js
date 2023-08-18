@@ -29,7 +29,7 @@ export function DiscordUtil(token) {
         this.client.on("interactionCreate", async (interaction) => {
             listenerMap.array.forEach((element) => {
                 if (element.name == interaction.commandName) {
-                    element.callback()
+                    element.callback(interaction)
                 }
                 return
             })
