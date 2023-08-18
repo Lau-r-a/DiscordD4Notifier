@@ -1,7 +1,7 @@
 import { Client, GatewayIntentBits } from "discord.js"
-import { initCommands } from "./commands.js"
-import { getNextBoss } from "./d4boss.js"
-import ScheduleController from "./ScheduleController.js"
+import { initCommands } from "./util/discord.js"
+import { getMessageCountdown, getMessage } from "./api/d4boss.js"
+import ScheduleController from "./util/ScheduleController.js"
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] })
 const users = process.env.USERS.split(",")
@@ -19,58 +19,14 @@ client.on("interactionCreate", async (interaction) => {
     }
 
     if (interaction.commandName === "next") {
-        let boss = await getNextBoss()
-        await interaction.reply(
-            "The next boss is " +
-                boss.name +
-                " in " +
-                boss.time +
-                " minutes at " +
-                convertCountdownToTime(boss.time) +
-                "."
-        )
+        let message = await getMessage()
+        await interaction.reply(message)
     }
 })
 
 async function sendMessage(userId, message) {
     const user = await client.users.fetch(userId, false)
     user.send(message)
-}
-
-function convertCountdownToTime(minutes) {
-    return new Date(Date.now() + minutes * 60000).toLocaleTimeString()
-}
-
-function scheduleNotifier() {
-    let lasttime = 0
-
-    scheduler.scheduleJob(5, async () => {
-        let boss = await getNextBoss()
-        console.log("Boss in: " + boss.time)
-
-        if (lasttime < boss.time) {
-            users.forEach((user) => {
-                sendMessage(
-                    user,
-                    "The next boss is " +
-                        boss.name +
-                        " in " +
-                        boss.time +
-                        " minutes at " +
-                        convertCountdownToTime(boss.time) +
-                        "."
-                )
-            })
-        }
-
-        if (boss.time < 20) {
-            users.forEach((user) => {
-                sendMessage(user, "The next boss is " + boss.name + " in " + boss.time + " minutes!")
-            })
-        }
-
-        lasttime = boss
-    })
 }
 
 initCommands([
@@ -85,5 +41,14 @@ initCommands([
 ])
 
 client.login(process.env.TOKEN)
-scheduleNotifier()
-console.log(await getNextBoss())
+console.log(await getMessage())
+
+scheduler.scheduleJob(5, async () => {
+    let message = await getMessageCountdown()
+
+    if (message !== null) {
+        users.forEach((user) => {
+            sendMessage(user, message)
+        })
+    }
+})
