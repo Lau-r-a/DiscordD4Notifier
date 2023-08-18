@@ -1,7 +1,5 @@
 import * as https from "https"
 
-let lastBossMinutes = 0
-
 async function httpsGet(url) {
     return new Promise(async (resolve, reject) => {
         let body = []
@@ -38,23 +36,27 @@ function messageWithTime(name, time) {
     return "The next boss is " + name + " in " + time + " minutes at " + convertCountdownToTime(time) + "."
 }
 
-export async function getMessage() {
-    let boss = await getNextBoss()
-    return messageWithTime(boss.name, boss.time)
-}
+export function D4BossApi() {
+    this.lastBossMinutes = 0
 
-export async function getMessageCountdown() {
-    let boss = await getNextBoss()
-
-    if (lastBossMinutes < boss.time) {
+    this.getMessage = async () => {
+        let boss = await getNextBoss()
         return messageWithTime(boss.name, boss.time)
     }
 
-    if (boss.time < 20) {
-        return messageCountdown(boss.name, boss.time)
+    this.getMessageCountdown = async () => {
+        let boss = await getNextBoss()
+
+        if (this.lastBossMinutes < boss.time) {
+            return messageWithTime(boss.name, boss.time)
+        }
+
+        if (boss.time < 20) {
+            return messageCountdown(boss.name, boss.time)
+        }
+
+        this.lastBossMinutes = boss.time
+
+        return null
     }
-
-    lastBossMinutes = boss.time
-
-    return null
 }
