@@ -58,6 +58,6 @@ export function D4BossApi() {
 
         this.lastBossMinutes = boss.time
 
-        return null
+        return message
     }
 }
