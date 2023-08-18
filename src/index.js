@@ -7,19 +7,6 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] })
 const users = process.env.USERS.split(",")
 const scheduler = new ScheduleController()
 
-console.log(await getNextBoss())
-
-initCommands([
-    {
-        name: "ping",
-        description: "Replies with Pong!",
-    },
-    {
-        name: "next",
-        description: "Return time till next world boss in minutes",
-    },
-])
-
 client.on("ready", () => {
     console.log("Logged in as " + client.user.tag)
 })
@@ -54,31 +41,49 @@ function convertCountdownToTime(minutes) {
     return new Date(Date.now() + minutes * 60000).toLocaleTimeString()
 }
 
+function scheduleNotifier() {
+    let lasttime = 0
+
+    scheduler.scheduleJob(5, async () => {
+        let boss = await getNextBoss()
+        console.log("Boss in: " + boss.time)
+
+        if (lasttime < boss.time) {
+            users.forEach((user) => {
+                sendMessage(
+                    user,
+                    "The next boss is " +
+                        boss.name +
+                        " in " +
+                        boss.time +
+                        " minutes at " +
+                        convertCountdownToTime(boss.time) +
+                        "."
+                )
+            })
+        }
+
+        if (boss.time < 20) {
+            users.forEach((user) => {
+                sendMessage(user, "The next boss is " + boss.name + " in " + boss.time + " minutes!")
+            })
+        }
+
+        lasttime = boss
+    })
+}
+
+initCommands([
+    {
+        name: "ping",
+        description: "Replies with Pong!",
+    },
+    {
+        name: "next",
+        description: "Return time till next world boss in minutes",
+    },
+])
+
 client.login(process.env.TOKEN)
-
-let lasttime = 0
-
-scheduler.scheduleJob(5, async () => {
-    let boss = await getNextBoss()
-    console.log("Boss in: " + boss.time)
-    if (lasttime < boss.time) {
-        users.forEach((user) => {
-            sendMessage(
-                user,
-                "The next boss is " +
-                    boss.name +
-                    " in " +
-                    boss.time +
-                    " minutes at " +
-                    convertCountdownToTime(boss.time) +
-                    "."
-            )
-        })
-    }
-    lasttime = boss
-    if (boss.time < 20) {
-        users.forEach((user) => {
-            sendMessage(user, "The next boss is " + boss.name + " in " + boss.time + " minutes!")
-        })
-    }
-})
+scheduleNotifier()
+console.log(await getNextBoss())
