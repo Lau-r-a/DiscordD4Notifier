@@ -43,7 +43,7 @@ export function D4BossApi() {
     this.getMessageCountdown = async () => {
         let message = null
 
-        if (this.bossTime == undefined || moment().tz("Europe/Berlin").isAfter(this.bossTime)) {
+        if (this.bossTime === "undefined" || moment().tz("Europe/Berlin").isAfter(this.bossTime)) {
             message = this.getMessage()
         }
 
