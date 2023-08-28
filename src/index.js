@@ -35,8 +35,6 @@ discordUtil.initCommands([
     },
 ])
 
-console.log(await d4BossApi.getMessage())
-
 scheduler.scheduleJob(5, async () => {
     let message = await d4BossApi.getMessageCountdown()
 
