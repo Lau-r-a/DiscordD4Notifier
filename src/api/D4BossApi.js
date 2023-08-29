@@ -31,13 +31,12 @@ export function D4BossApi() {
     this.bossTime
 
     this.getMessage = async () => {
-        if (this.bossTime === undefined) {
+        if (this.bossTime === undefined || moment().tz("Europe/Berlin").isAfter(this.bossTime)) {
             let boss = await getNextBoss()
 
             this.bossTime = countdownToTime(boss.time)
             this.bossName = boss.name
         }
-
         return messageWithTime(this.bossName, this.bossTime)
     }
 
@@ -47,9 +46,7 @@ export function D4BossApi() {
         if (this.bossTime === undefined || moment().tz("Europe/Berlin").isAfter(this.bossTime)) {
             message = this.getMessage()
             console.log(await message)
-        }
-
-        if (this.bossTime != undefined && timeToMinutesLeft(this.bossTime) < 20) {
+        } else if (this.bossTime != undefined && timeToMinutesLeft(this.bossTime) < 20) {
             message = messageCountdown(this.bossName, this.bossTime)
         }
 
